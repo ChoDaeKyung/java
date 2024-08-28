@@ -41,19 +41,9 @@ public class M_household_Account {
     public static int Choice() {
         String[][] products = new String[10][2];
         Scanner sc = new Scanner(System.in);
-        System.out.println("[1]상품추가 [2]가계부 조회 [3]나가기");
+        System.out.println("[1]상품추가 [2]가계부 조회 [3]뒤로가기");
         int choice = sc.nextInt();
-        while (true) {
-            switch (choice) {
-                case 1:
-                    Products(products);
-                    break;
-                case 2:
-                    Products(products);
-                    break;
-            }
-            return choice;
-        }
+
     }
 
     public static void Month(String[][] month) {
@@ -63,15 +53,15 @@ public class M_household_Account {
 
 
     public static void main(String[] args) {
-
+        String[][][] arr = new String[12][10][3];
         while (true) {
             int AccountMonth = printAccount();
             switch (AccountMonth) {
                 case 1:
-                    while(true) {
-                        Choice();
-                        break;
-                    }
+                    Choice();
+                break;
+
+
                 }
             }
         }
