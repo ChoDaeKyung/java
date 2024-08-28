@@ -94,20 +94,6 @@ public class M_account {
         System.out.println("얼마를 출금하시겠습니까?");
         int withdraw = sc.nextInt();
 
-        if(totalMoney<withdraw){
-            System.out.println("잔액이 부족합니다.");
-            System.out.println("고객님의 현재 잔액은 "+totalMoney+"원 입니다.");
-            System.out.println(totalMoney+"원 을 인출하시겠습니까?");
-            System.out.println("[1]예 [2]아니오");
-            Scanner sc = new Scanner(System.in);
-            int select = sc.nextInt();
-            if(select==1){
-                totalMoney -= totalMoney ;
-            }else if(select==2){
-                return;
-            };
-        }
-
         totalMoney -= withdraw;
 
         System.out.println("고객님의 현재 잔액은 : " + totalMoney +"원 입니다.");
