@@ -62,8 +62,9 @@ public class AA_Management implements AA_Member {
         System.out.print("이메일을 입력해주세요 : ");
         String email = sc.nextLine();
 
+        List<String> membersInfo = Members.get(email);
         if (Members.containsKey(email)) {
-            System.out.println("[이름] " + Members.get(0) + " [이메일] " + email + " [전화번호] " + Members.get(1));
+            System.out.println("[이름] " + membersInfo.get(0) + " [이메일] " + email + " [전화번호] " + membersInfo.get(1));
         } else {
             System.out.println("찾으시는 정보가 없습니다.");
         }
@@ -76,8 +77,8 @@ public class AA_Management implements AA_Member {
         System.out.print("이름을 입력해주세요 : ");
         String name = sc.nextLine();
 
-        List<String> membersInfo = new ArrayList<>();
         for (Map.Entry<String, List<String>> entry : Members.entrySet()) {
+            List<String> membersInfo = Members.get(entry.getKey());
             if (Members.containsValue(name)) {
                 System.out.println("[이름] " + name + " [이메일] " + entry.getKey() + " [전화번호] " + membersInfo.get(1));
             } else {
