@@ -5,6 +5,7 @@ import java.util.*;
 public class AAA_accountlmpl implements AAA_account {
 
     Map<String, List<Object[]>> cusInfo = new HashMap<>();
+    Map<String, Integer> totalMoney = new HashMap<>();
 
     @Override
     public int printAccount() {
@@ -57,7 +58,7 @@ public class AAA_accountlmpl implements AAA_account {
         }
         System.out.println("' 입니다.");
 
-        Object[] cusTom = new Object[];
+        Object[] cusTom = new Object[3];
         cusInfo.put(AccountN, new ArrayList<>());
         cusTom[0] = name;
         cusTom[1] = email;
@@ -81,13 +82,15 @@ public class AAA_accountlmpl implements AAA_account {
         System.out.print("얼마를 입금하시겠습니까? -> ");
         int money = sc.nextInt();
 
-        List<Object[]> membersInfo = cusInfo.get(accountNum);
-        int result = (int)membersInfo.get(3) + money;
 
-        membersInfo.add(result);
-        cusInfo.put(accountNum, membersInfo);
+        int membersMoney = totalMoney.get(accountNum);
 
-        System.out.print("고객님의 현재 잔액은 : " + membersInfo.get(3) + "원 입니다.");
+        for(int i=0; i<totalMoney.size(); i++) {
+            membersMoney +=money;
+            totalMoney.put(accountNum, membersMoney);
+        }
+
+        System.out.print("고객님의 현재 잔액은 : " + membersMoney + "원 입니다.");
     }
 
     @Override
@@ -105,13 +108,15 @@ public class AAA_accountlmpl implements AAA_account {
         System.out.print("얼마를 출금하시겠습니까? -> ");
         int money = sc.nextInt();
 
-        List<Object> membersInfo = cusInfo.get(accountNum);
-        int result = (int) membersInfo.get(3) - money;
+        List<Object[]> membersInfo = cusInfo.get(accountNum);
+        Object[] accountInfo = membersInfo.get(0);
+        int cusinfo = (int) accountInfo[3];
+        int newCusinfo = cusinfo + money;
+        accountInfo[3] = newCusinfo;
 
-        membersInfo.add(result);
-        cusInfo.put(accountNum, membersInfo);
+        cusInfo.get(accountNum).add(accountInfo);
 
-        System.out.print("고객님의 현재 잔액은 : " + membersInfo.get(3) + "원 입니다.");
+        System.out.print("고객님의 현재 잔액은 : " + newCusinfo + "원 입니다.");
     }
 
     @Override
@@ -126,10 +131,13 @@ public class AAA_accountlmpl implements AAA_account {
             return;
         }
 
-        for (Map.Entry<String, List<Object>> customer : cusInfo.entrySet()) {
-            List<Object> membersInfo = cusInfo.get(accountNum);
-            if(customer.getKey().equals(accountNum))
-                System.out.println("[이름]" + membersInfo.get(0) + " [전화번호] " + membersInfo.get(1) + " [이메일] " + membersInfo.get(2) + "[현재잔액] " +membersInfo.get(3));
+        for (Map.Entry<String, List<Object[]>> customer : cusInfo.entrySet()) {
+            int membersMoney = totalMoney.get(accountNum);
+            Object[] Member = new Object[3];
+ //           for (int i = 0; i < totalMoney.size(); i++) {
+  //              if (customer.getKey().equals(accountNum))
+  //                  System.out.println("[이름]" + customer.getValue(0) + " [전화번호] " + membersMoney.get(1) + " [이메일] " + membersMoney.get(2) + "[현재잔액] " + membersMoney.get(3));
+   //         }
         }
     }
 
@@ -145,14 +153,14 @@ public class AAA_accountlmpl implements AAA_account {
             return;
         }
 
-        List<Object> membersInfo = cusInfo.get(accountNum);
+        List<Object[]> membersInfo = cusInfo.get(accountNum);
         System.out.println(membersInfo.get(0) + "고객님의 현재 잔액은 " + membersInfo.get(3) + "원 입니다.");
     }
 
     @Override
     public void checkEveryOne() {
-        for (Map.Entry<String, List<Object>> customer : cusInfo.entrySet()) {
-            List<Object> membersInfo = cusInfo.get(customer.getKey());
+        for (Map.Entry<String, List<Object[]>> customer : cusInfo.entrySet()) {
+            List<Object[]> membersInfo = cusInfo.get(customer.getKey());
             System.out.println("[이름] "+membersInfo.get(0)+" [전화번호] " + membersInfo.get(1) + " [이메일] " + membersInfo.get(2) + "[현재잔액] " + membersInfo.get(3) + " [계좌번호] " + customer.getKey());
         }
     }

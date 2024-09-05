@@ -1,0 +1,25 @@
+package himedia.practice;
+
+public class B_Start {
+    public static void main(String[] args) {
+        B_AccountBook accountbook = new B_AccountBooklmpl();
+
+        while(true){
+            int Choice = accountbook.printAccount();
+            switch(Choice){
+                case 1:
+                    accountbook.AddList();
+                    break;
+                case 2:
+                    accountbook.checkListByDate();
+                    break;
+                case 3:
+                    accountbook.checkListByProduct();
+                    break;
+                default:
+                    System.out.println("올바른 숫자를 입력해주세요.");
+                    break;
+            }
+        }
+    }
+}
