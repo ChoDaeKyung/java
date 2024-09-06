@@ -4,17 +4,15 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-import static jdk.javadoc.internal.doclets.formats.html.markup.HtmlStyle.detail;
-
 public class B_AccountBooklmpl implements B_AccountBook {
 
-    private Map<String, String[]> name = new HashMap<>();
-    private String[2] detail = new ArrayList<>();
+    private Map<String, List<String[]>> map = new HashMap<>();
 
     @Override
     public int printAccount() {
         Scanner sc = new Scanner(System.in);
         System.out.println("");
+        System.out.println("==================================================");
         System.out.println("[1]내역추가 [2]내역조회 [3]전체삭제 [4]내역삭제 [5]종료");
         System.out.print("원하시는 옵션을 선택해주세요 : ");
         System.out.println("");
@@ -29,54 +27,84 @@ public class B_AccountBooklmpl implements B_AccountBook {
     }
 
     @Override
-    public void AddList() {
+    public void addList() {
         Scanner sc = new Scanner(System.in);
-        System.out.println("추가하고 싶은 상품과 가격을 입력해주세요.");
-        System.out.print("상품 : ");
-        String products = sc.nextLine();
-        System.out.print("가격 : ");
-        String prices = sc.nextLine();
+        System.out.print("추가할 상품을 입력해주세요 : ");
+        String name = sc.nextLine();
+        System.out.print("상품의 가격을 입력해주세요 : ");
+        String price = sc.nextLine();
         getNowDateTime();
-        String Date = getNowDateTime();
+        String date = getNowDateTime();
+        String[] item = new String[2];
+        item[0] = name;
+        item[1] = price;
 
-
-        String[] product = new String[2];
-        if(name.containsKey(Date)) {
-            product = name.get(Date);
-            product[0] = products;
-            product[1] = prices;
+        if (map.containsKey(date)) {
+            map.get(date).add(item);
         } else {
-            List<String> newDate = new ArrayList<>();
-            newDate.add("[상품] " + products + " [가격] " + prices);
-            name.put(Date, newDate);
+            List<String[]> list = new ArrayList<>();
+            list.add(item);
+            map.put(date, list);
         }
 
-        System.out.println(getNowDateTime() + "에 " + products + "와(과) " + prices + "원이 추가되었습니다.");
+        System.out.println("추가내용 : [상품]" + name + " [가격]" + price + " [날짜]" + date);
     }
 
     @Override
     public void checkListByDate() {
         Scanner sc = new Scanner(System.in);
-        System.out.print("조회하고 싶은 날짜를 입력해주세요[ex) 0000-00-00] : ");
+        System.out.print("조회하고 싶은 날짜를 입력해주세요 ex)yyyy-mm-dd : ");
         String date = sc.nextLine();
 
-        List<String> dataDetails = name.get(date);
-        for(int i = 0; i < dataDetails.size(); i++) {
-            System.out.println(dataDetails.get(i));
+        if (map.isEmpty() || !map.containsKey(date)) {
+            System.out.println("해당 날짜의 내역이 없습니다.");
+            return;
+        }
+
+        List<String[]> list = map.get(date);
+        for (int i = 0; i < list.size(); i++) {
+            String[] detail = list.get(i);
+            if (map.containsKey(date)) {
+                System.out.println("[날짜]" + date + " [상품]" + detail[0] + " [가격]" + detail[1]);
+            } else {
+                System.out.println("해당 날짜의 내역이 없습니다.");
+            }
         }
     }
 
     @Override
-    public void checkListByProduct() {
+    public void deleteAll() {
         Scanner sc = new Scanner(System.in);
-        System.out.print("조회하고 싶은 상품명을 입력해주세요 : ");
-        String productName = sc.nextLine();
+        System.out.print("삭제하고 싶은 날짜를 입력해주세요 : ");
+        String date = sc.nextLine();
 
-        for (Map.Entry<String, List<String>> Lists : name.entrySet()) {
-            List<String> proDucts = name.get(Lists.getKey());
-            if (name.containsValue(productName)) {
-                System.out.println("[날짜] " + proDucts);
-            }
+        if (map.containsKey(date)) {
+            map.remove(date);
+            System.out.println("해당 날짜의 내역 삭제를 완료했습니다.");
+        } else {
+            System.out.println("해당 날짜의 내역이 없습니다.");
         }
+    }
+
+    @Override
+    public void delectSelect() {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("삭제하고싶은 날짜를 입력해주세요 : ");
+        String date = sc.nextLine();
+
+        List<String[]> list = map.get(date);
+        if (map.containsKey(date)) {
+            for (int i = 0; i < list.size(); i++) {
+                System.out.println("(" + (i+1) + ")" + " [상품]" + list.get(i)[0] + " [가격]" + list.get(i)[1]);
+            }
+        }else{
+            System.out.println("해당 날짜의 내역이 없습니다.");
+            return;
+        }
+
+        System.out.print("삭제하고 싶은 내역의 번호를 입력해주세요 : ");
+        int num = sc.nextInt();
+        list.remove(num-1);
+        System.out.println("내역 삭제가 완료 되었습니다.");
     }
 }
