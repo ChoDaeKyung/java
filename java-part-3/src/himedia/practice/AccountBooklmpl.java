@@ -130,6 +130,11 @@ public class AccountBooklmpl implements AccountBook {
         todayAccount = Account.resolve(date + ".txt");
 
         if ( Files.exists(todayAccount) ){
+            try {
+                Files.delete(todayAccount);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }
