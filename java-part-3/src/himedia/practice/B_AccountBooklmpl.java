@@ -104,6 +104,9 @@ public class B_AccountBooklmpl implements B_AccountBook {
 
         System.out.print("삭제하고 싶은 내역의 번호를 입력해주세요 : ");
         int num = sc.nextInt();
+        if (num<1 || num>list.size()) {
+            System.out.println("틀린 번호입니다.");
+        }
         list.remove(num-1);
         System.out.println("내역 삭제가 완료 되었습니다.");
     }
