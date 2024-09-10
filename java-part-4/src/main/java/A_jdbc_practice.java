@@ -200,7 +200,6 @@ public class A_jdbc_practice {
                 int age = resultSet.getInt("age");
                 String phone = resultSet.getString("phone");
 
-                System.out.println(id + " : " + name + " : " + age + " : " + phone);
             }
 
         } catch (SQLException e) {
