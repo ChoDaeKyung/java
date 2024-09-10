@@ -1,7 +1,6 @@
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Objects;
 import java.util.Scanner;
 
 public class database_practice implements database_prac_Interface {
@@ -62,6 +61,8 @@ public class database_practice implements database_prac_Interface {
     @Override
     public void addInfo() {
         String query = "INSERT INTO ACADEMY (EMPNO, ENAME, JOB, MGR, HIREDATE, SAL, COMM, DEPTNO, EMAIL, PHONE) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String queryCheckEmail = "SELECT * FROM ACADEMY WHERE EMAIL = ?";
+        String queryCheckPhone = "SELECT * FROM ACADEMY WHERE PHONE = ?";
 
         Scanner sc = new Scanner(System.in);
         System.out.print("Name : ");
@@ -76,62 +77,90 @@ public class database_practice implements database_prac_Interface {
         getNowDateTime();
         String date = getNowDateTime();
 
-        // 사원번호의 각 번호를 4칸의 배열안에 각각 삽입 (첫번째 숫자는 무조건 7)
-        int[] empno = new int[4];
-        empno[0] = 7;
-        for (int i = 1; i < empno.length; i++) {
-            empno[i] = (int) (Math.random() * 10);
-        }
-
-        // 각각 삽입된 네개의 숫자를 String empNO라는 문자열로 나열 및 저장
-        String empNO = "";
-        System.out.print("Your EMPNO is : ");
-        for (int i = 0; i < empno.length; i++) {
-            System.out.print(empno[i]);
-            empNO += empno[i];
-        }
-        System.out.println("");
-
-        // 부서번호의 각 번호를 4칸의 배열안에 각각 삽입 (첫번째 숫자는 무조건 5)
-        int[] deptno = new int[4];
-        deptno[0] = 5;
-        for (int i = 1; i < deptno.length; i++) {
-            deptno[i] = (int) (Math.random() * 10);
-        }
-
-        // 부서번호의 각 번호를 4칸의 배열안에 각각 삽입
-        String deptNO = "";
-        System.out.print("Your DEPTNO is : ");
-        for (int i = 0; i < deptno.length; i++) {
-            System.out.print(deptno[i]);
-            deptNO += deptno[i];
-        }
-        System.out.println("");
-
-        // String 타입으로 저장해뒀던 사원번호 및 부서번호를 Integer 타입으로 변환
-        int EmpNo = Integer.parseInt(empNO);
-        int DeptNo = Integer.parseInt(deptNO);
-
         try (
                 Connection conn = connection();
-                PreparedStatement preparedStatement = conn.prepareStatement(query);
         ) {
-            // 각 table의 순서에 맞게 정보 저장
-            preparedStatement.setInt(1, EmpNo);
-            preparedStatement.setString(2, name);
-            preparedStatement.setString(3, job);
-            preparedStatement.setInt(4, jobNum(job));
-            preparedStatement.setString(5, date);
-            preparedStatement.setInt(6, 0);
-            preparedStatement.setInt(7, 0);
-            preparedStatement.setInt(8, DeptNo);
-            preparedStatement.setString(9, email);
-            preparedStatement.setString(10, phone);
+            boolean isPhoneExist = false;
+            boolean isEmailExist = false;
 
-            int result = preparedStatement.executeUpdate();
-            if (result > 0) { // 만약 저장에 성공했다면
-                System.out.println("WELCOME!");
+            try (PreparedStatement checkPhone = conn.prepareStatement(queryCheckEmail);) {
+                checkPhone.setString(1, email);
+                ResultSet rs = checkPhone.executeQuery();
+                if (rs.next()) {
+                    isPhoneExist = true;
+                }
+            }
+            try (PreparedStatement checkPhone = conn.prepareStatement(queryCheckPhone);) {
+                checkPhone.setString(1, phone);
+                ResultSet rs = checkPhone.executeQuery();
+                if (rs.next()) {
+                    isEmailExist = true;
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+
+            if (isPhoneExist || isEmailExist) {
+                System.out.println("You already joined! Please press 4 to Display your Information.");
+            } else {
+                // 사원번호의 각 번호를 4칸의 배열안에 각각 삽입 (첫번째 숫자는 무조건 7)
+                int[] empno = new int[4];
+                empno[0] = 7;
+                for (int i = 1; i < empno.length; i++) {
+                    empno[i] = (int) (Math.random() * 10);
+                }
+
+                // 각각 삽입된 네개의 숫자를 String empNO라는 문자열로 나열 및 저장
+                String empNO = "";
+                System.out.print("Your EMPNO is : ");
+                for (int i = 0; i < empno.length; i++) {
+                    System.out.print(empno[i]);
+                    empNO += empno[i];
+                }
                 System.out.println("");
+
+                // 부서번호의 각 번호를 4칸의 배열안에 각각 삽입 (첫번째 숫자는 무조건 5)
+                int[] deptno = new int[4];
+                deptno[0] = 5;
+                for (int i = 1; i < deptno.length; i++) {
+                    deptno[i] = (int) (Math.random() * 10);
+                }
+
+                // 부서번호의 각 번호를 4칸의 배열안에 각각 삽입
+                String deptNO = "";
+                System.out.print("Your DEPTNO is : ");
+                for (int i = 0; i < deptno.length; i++) {
+                    System.out.print(deptno[i]);
+                    deptNO += deptno[i];
+                }
+                System.out.println("");
+
+                // String 타입으로 저장해뒀던 사원번호 및 부서번호를 Integer 타입으로 변환
+                int EmpNo = Integer.parseInt(empNO);
+                int DeptNo = Integer.parseInt(deptNO);
+
+                try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+                    // 각 table의 순서에 맞게 정보 저장
+                    preparedStatement.setInt(1, EmpNo);
+                    preparedStatement.setString(2, name);
+                    preparedStatement.setString(3, job);
+                    preparedStatement.setInt(4, jobNum(job));
+                    preparedStatement.setString(5, date);
+                    preparedStatement.setInt(6, 0);
+                    preparedStatement.setInt(7, 0);
+                    preparedStatement.setInt(8, DeptNo);
+                    preparedStatement.setString(9, email);
+                    preparedStatement.setString(10, phone);
+
+
+                    int result = preparedStatement.executeUpdate();
+                    if (result > 0) { // 만약 저장에 성공했다면
+                        System.out.println("WELCOME!");
+                        System.out.println("");
+                    }
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -246,7 +275,7 @@ public class database_practice implements database_prac_Interface {
         }
 
     }
-    
+
 }
 
 

@@ -1,7 +1,9 @@
+import java.sql.SQLException;
+
 public class database_prac_Start {
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
         database_prac_Interface database = new database_practice();
 
         while(true){
