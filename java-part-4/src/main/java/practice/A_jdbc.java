@@ -1,3 +1,5 @@
+package practice;
+
 import java.sql.*;
 
 public class A_jdbc {

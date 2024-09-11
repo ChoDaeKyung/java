@@ -5,8 +5,6 @@ import java.util.Scanner;
 
 public class database_practice implements database_prac_Interface {
 
-    private int totalMoney;
-
     @Override
     public int Sellect() {
         Scanner sc = new Scanner(System.in);
@@ -61,8 +59,8 @@ public class database_practice implements database_prac_Interface {
     @Override
     public void addInfo() {
         String query = "INSERT INTO ACADEMY (EMPNO, ENAME, JOB, MGR, HIREDATE, SAL, COMM, DEPTNO, EMAIL, PHONE) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        String queryCheckEmail = "SELECT * FROM ACADEMY WHERE EMAIL = ?";
-        String queryCheckPhone = "SELECT * FROM ACADEMY WHERE PHONE = ?";
+        String queryCheckEmail = "SELECT EMAIL FROM ACADEMY WHERE EMAIL = ?";
+        String queryCheckPhone = "SELECT PHONE FROM ACADEMY WHERE PHONE = ?";
 
         Scanner sc = new Scanner(System.in);
         System.out.print("Name : ");
@@ -83,16 +81,16 @@ public class database_practice implements database_prac_Interface {
             boolean isPhoneExist = false;
             boolean isEmailExist = false;
 
-            try (PreparedStatement checkPhone = conn.prepareStatement(queryCheckEmail);) {
-                checkPhone.setString(1, email);
+            try (PreparedStatement checkPhone = conn.prepareStatement(queryCheckPhone);) {
+                checkPhone.setString(1, phone);
                 ResultSet rs = checkPhone.executeQuery();
                 if (rs.next()) {
                     isPhoneExist = true;
                 }
             }
-            try (PreparedStatement checkPhone = conn.prepareStatement(queryCheckPhone);) {
-                checkPhone.setString(1, phone);
-                ResultSet rs = checkPhone.executeQuery();
+            try (PreparedStatement checkEmail = conn.prepareStatement(queryCheckEmail);) {
+                checkEmail.setString(1, email);
+                ResultSet rs = checkEmail.executeQuery();
                 if (rs.next()) {
                     isEmailExist = true;
                 }
@@ -100,8 +98,12 @@ public class database_practice implements database_prac_Interface {
                 throw new RuntimeException(e);
             }
 
-            if (isPhoneExist || isEmailExist) {
-                System.out.println("You already joined! Please press 4 to Display your Information.");
+            if (isPhoneExist) {
+                System.out.println("Your PhoneNumber is already exist!");
+                System.out.println("Press 4 to Display your Information.");
+            } else if (isEmailExist) {
+                System.out.println("Your Email is already exist!");
+                System.out.println("Press 4 to Display your Information.");
             } else {
                 // 사원번호의 각 번호를 4칸의 배열안에 각각 삽입 (첫번째 숫자는 무조건 7)
                 int[] empno = new int[4];
@@ -200,6 +202,7 @@ public class database_practice implements database_prac_Interface {
     @Override
     public void givePay() {
         String query = "UPDATE ACADEMY SET SAL = ?, COMM = ? WHERE EMPNO = ? and ENAME = ?";
+        String totalmoney = "SELECT SAL, COMM FROM ACADEMY WHERE ENAME = ? and EMPNO = ?";
         Scanner sc = new Scanner(System.in);
         System.out.print("Write the NAME : ");
         String name = sc.nextLine();
@@ -207,75 +210,99 @@ public class database_practice implements database_prac_Interface {
         int empno = sc.nextInt();
         sc.nextLine();
 
+        int totalMoney = 0;
+        int totalBonus = 0;
+
         try (
                 Connection conn = connection();
-                PreparedStatement preparedStatement = conn.prepareStatement(query);
         ) {
-            preparedStatement.setInt(3, empno);
-            preparedStatement.setString(4, name);
+            try (PreparedStatement checkmoney = conn.prepareStatement(totalmoney)) {
+                checkmoney.setString(1, name);
+                checkmoney.setInt(2, empno);
 
-            preparedStatement.setInt(1, 0);
-            preparedStatement.setInt(2, 0);
+                ResultSet resultSet = checkmoney.executeQuery();
+                if (resultSet.next()) {
+                    int moneyis = resultSet.getInt("SAL");
+                    int bonusis = resultSet.getInt("COMM");
 
-            int result = preparedStatement.executeUpdate();
-            if (result > 0) {
-                System.out.print("How much do you want to give? : ");
-                int pay = sc.nextInt();
-                sc.nextLine();
-                System.out.print("Bonus : ");
-                int bonus = sc.nextInt();
-                sc.nextLine();
-                preparedStatement.setInt(1, pay);
-                preparedStatement.setInt(2, bonus);
-                int result2 = preparedStatement.executeUpdate();
-                if (result2 > 0) {
-                    System.out.println("Pay Complete!");
-                }else{
-                    System.out.println("Pay Fail..");
+                    totalMoney = moneyis;
+                    totalBonus = bonusis;
                 }
-            }else{
-                System.out.println("There's no Information.");
+
+            }
+
+            try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+                preparedStatement.setInt(3, empno);
+                preparedStatement.setString(4, name);
+
+                preparedStatement.setInt(1, totalMoney);
+                preparedStatement.setInt(2, totalBonus);
+
+                int result = preparedStatement.executeUpdate();
+                if (result > 0) {
+                    System.out.print("How much do you want to give? : ");
+                    int pay = sc.nextInt();
+                    sc.nextLine();
+                    System.out.print("Bonus : ");
+                    int bonus = sc.nextInt();
+                    sc.nextLine();
+                    preparedStatement.setInt(1, totalMoney + pay);
+                    preparedStatement.setInt(2, totalBonus + bonus);
+                    int result2 = preparedStatement.executeUpdate();
+                    if (result2 > 0) {
+                        System.out.println("Pay Complete!");
+                    } else {
+                        System.out.println("Pay Fail..");
+                    }
+                } else {
+                    System.out.println("There's no Information.");
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    @Override
-    public void displayInfo() {
-        String query = "SELECT ENAME, EMPNO, MGR, HIREDATE, DEPTNO, SAL, COMM FROM ACADEMY WHERE ENAME = ? and (EMAIL = ? or PHONE = ?)";
-        Scanner sc = new Scanner(System.in);
-        System.out.print("Write the NAME : ");
-        String name = sc.nextLine();
-        System.out.print("Write the EMAIL or PHONE : ");
-        String emailorphone = sc.nextLine();
+        @Override
+        public void displayInfo () {
+            String query = "SELECT ENAME, EMPNO, MGR, HIREDATE, DEPTNO, SAL, COMM FROM ACADEMY WHERE ENAME = ? and (EMAIL = ? or PHONE = ?)";
+            Scanner sc = new Scanner(System.in);
+            System.out.print("Write the NAME : ");
+            String name = sc.nextLine();
+            System.out.print("Write the EMAIL or PHONE : ");
+            String emailorphone = sc.nextLine();
 
-        try (
-                Connection conn = connection();
-                PreparedStatement preparedStatement = conn.prepareStatement(query);
-        ) {
-            preparedStatement.setString(1, name);
-            preparedStatement.setString(2, emailorphone);
-            preparedStatement.setString(3, emailorphone);
+            try (
+                    Connection conn = connection();
+                    PreparedStatement preparedStatement = conn.prepareStatement(query);
+            ) {
+                preparedStatement.setString(1, name);
+                preparedStatement.setString(2, emailorphone);
+                preparedStatement.setString(3, emailorphone);
 
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()){
-                int empno = resultSet.getInt("EMPNO");
-                int mgr = resultSet.getInt("MGR");
-                String HIREDATE = resultSet.getString("HIREDATE");
-                int deptno = resultSet.getInt("DEPTNO");
-                int sal = resultSet.getInt("SAL");
-                int comm = resultSet.getInt("COMM");
+                ResultSet resultSet = preparedStatement.executeQuery();
+                if (resultSet.next()) {
+                    int empno = resultSet.getInt("EMPNO");
+                    int mgr = resultSet.getInt("MGR");
+                    String HIREDATE = resultSet.getString("HIREDATE");
+                    int deptno = resultSet.getInt("DEPTNO");
+                    int sal = resultSet.getInt("SAL");
+                    int comm = resultSet.getInt("COMM");
 
-                System.out.println("[NAME]" + name + " [EMPNO]" + empno + " [MGR]" + mgr + " [HIREDATE]" + HIREDATE + " [DEPTNO]" + deptno + " [TOTAL_SAL]" + sal + " [TOTAL_BONUS]" + comm);
+                    System.out.println("[NAME]" + name + " [EMPNO]" + empno + " [MGR]" + mgr + " [HIREDATE]" + HIREDATE + " [DEPTNO]" + deptno + " [TOTAL_SAL]" + sal + " [TOTAL_BONUS]" + comm);
+                }
+
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
             }
 
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
         }
-
     }
 
-}
+
+
+
 
 

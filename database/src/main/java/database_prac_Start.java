@@ -25,7 +25,7 @@ public class database_prac_Start {
                     System.out.println("Thanks for Using My System.");
                     return;
                 default:
-                    System.out.println("Pleas write the right number.");
+                    System.out.println("Please write the right number.");
                     break;
             }
         }
