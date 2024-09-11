@@ -102,7 +102,7 @@ public class database_practice implements database_prac_Interface {
                 System.out.println("Your PhoneNumber is already exist!");
                 System.out.println("Press 4 to Display your Information.");
             } else if (isEmailExist) {
-                System.out.println("Your Email is already exist!");
+                System.out.println("Your Email is already exist! Press 4 to Display your Information.");
                 System.out.println("Press 4 to Display your Information.");
             } else {
                 // 사원번호의 각 번호를 4칸의 배열안에 각각 삽입 (첫번째 숫자는 무조건 7)
