@@ -9,6 +9,7 @@ public class Contentslmpl implements Contents {
 
     private boolean status = false;
     private String nowID = null;
+    private String nowName = null;
 
 
     @Override
@@ -40,7 +41,7 @@ public class Contentslmpl implements Contents {
         Scanner sc = new Scanner(System.in);
         System.out.println("");
         if(status){
-            System.out.println("<< 로그인 상태 >>");
+            System.out.println("'" + nowName + "'" + "님 현재 로그인 상태입니다!");
         }else if(!status){
             System.out.println("<< 로그아웃 상태, 로그인 해주세요! >>");
         }
@@ -126,6 +127,7 @@ public class Contentslmpl implements Contents {
                                 if (result > 0) {
                                     System.out.println("환영합니다 '" + name + "'님!");
                                     System.out.println("");
+
                                 }
                             }
                         }
@@ -144,10 +146,11 @@ public class Contentslmpl implements Contents {
     @Override
     public void login() {
         if (status == true) {
-            System.out.println("이미 로그인되었습니다.");
+            System.out.println("이미 로그인상태입니다.");
             return;
         }
 
+        String loginName = "SELECT ENAME FROM INFO WHERE ID =? and PW = ?";
         String conT = "SELECT ID, PW FROM INFO WHERE ID =? and PW = ?";
         String queryCheckID = "SELECT ID FROM INFO WHERE ID = ?";
         String queryCheckPW = "SELECT ID, PW FROM INFO WHERE ID = ? and PW = ?";
@@ -196,6 +199,20 @@ public class Contentslmpl implements Contents {
                         }
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
+                    }
+
+                    try(
+                            PreparedStatement nowNameis = conn.prepareStatement(loginName)
+                            ){
+                                nowNameis.setString(1, ID);
+                                nowNameis.setString(2, PW);
+
+                        ResultSet resultSet = nowNameis.executeQuery();
+                        if (resultSet.next()) {
+                            String nowname = resultSet.getString("ENAME");
+
+                            this.nowName = nowname;
+                        }
                     }
                 }
             }
@@ -364,6 +381,7 @@ public class Contentslmpl implements Contents {
     public void logout() {
         status = false;
         nowID = null;
+        nowName = null;
         System.out.println("로그아웃 성공!");
     }
 
@@ -401,6 +419,7 @@ public class Contentslmpl implements Contents {
 
                             status = false;
                             nowID = null;
+                            nowName = null;
                         }
                     }
                 }else{
