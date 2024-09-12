@@ -1,6 +1,8 @@
 package Contents;
 
 import java.sql.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class Contentslmpl implements Contents {
@@ -28,12 +30,23 @@ public class Contentslmpl implements Contents {
     }
 
     @Override
+    public String getNowDateTime() {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd / hh:mm:ss");
+            return LocalDateTime.now().format(formatter);
+    }
+
+    @Override
     public int firstMenu() {
         Scanner sc = new Scanner(System.in);
         System.out.println("");
-        System.out.println("[1]Membership [2]Login [3]AddContents [4]ReplaceContents [5]DeleteContents");
-        System.out.println("[6]DisplayContent [7]Logout [8]QuitMembership [9]QUIT");
-        System.out.print("Choose one of the following options : ");
+        if(status){
+            System.out.println("<< 로그인 상태 >>");
+        }else if(!status){
+            System.out.println("<< 로그아웃 상태, 로그인 해주세요! >>");
+        }
+        System.out.println("[1]회원가입 [2]로그인 [3]댓글 추가 [4]댓글 수정 [5]댓글 삭제");
+        System.out.println("[6]전체글 보기 [7]로그아웃 [8]회원탈퇴 [9]종료");
+        System.out.print("-> 옵션을 선택해주세요 : ");
 
         return sc.nextInt();
     }
@@ -47,11 +60,11 @@ public class Contentslmpl implements Contents {
         String queryCheckID = "SELECT ID FROM INFO WHERE ID = ?";
 
         Scanner sc = new Scanner(System.in);
-        System.out.print("Name : ");
+        System.out.print("이름 : ");
         String name = sc.nextLine();
-        System.out.print("Email : ");
+        System.out.print("이메일 : ");
         String email = sc.nextLine();
-        System.out.print("Phone : ");
+        System.out.print("전화번호 : ");
         String phone = sc.nextLine();
 
         try (
@@ -78,9 +91,9 @@ public class Contentslmpl implements Contents {
             }
 
             if (isPhoneExist) {
-                System.out.println("Your PhoneNumber is already exist!");
+                System.out.println("이미 존재하는 전화번호입니다.");
             } else if (isEmailExist) {
-                System.out.println("Your Email is already exist!");
+                System.out.println("이미 존재하는 이메일입니다.");
             } else {
                 System.out.print("ID : ");
                 String id = sc.nextLine();
@@ -100,7 +113,7 @@ public class Contentslmpl implements Contents {
                         }
 
                         if (isIDExist) {
-                            System.out.println("This ID id already exist");
+                            System.out.println("이미 존재하는 ID입니다.");
                         } else {
                             try (PreparedStatement addInfo = conn.prepareStatement(memInfo)) {
                                 addInfo.setString(1, name);
@@ -111,7 +124,7 @@ public class Contentslmpl implements Contents {
 
                                 int result = addInfo.executeUpdate();
                                 if (result > 0) {
-                                    System.out.println("WELCOME! '" + name + "'!");
+                                    System.out.println("환영합니다 '" + name + "'님!");
                                     System.out.println("");
                                 }
                             }
@@ -130,8 +143,8 @@ public class Contentslmpl implements Contents {
 
     @Override
     public void login() {
-        if(status==true) {
-            System.out.println("Already logged in");
+        if (status == true) {
+            System.out.println("이미 로그인되었습니다.");
             return;
         }
 
@@ -151,7 +164,7 @@ public class Contentslmpl implements Contents {
                 checkID.setString(1, ID);
                 ResultSet rs = checkID.executeQuery();
                 if (!rs.next()) {
-                    System.out.println("There's No ID.");
+                    System.out.println("존재하지 않는 ID입니다.");
                     return;
                 }
 
@@ -166,7 +179,7 @@ public class Contentslmpl implements Contents {
                     }
                 }
                 if (!isPWRight) {
-                    System.out.println("Wrong Password!");
+                    System.out.println("비밀번호가 틀렸습니다.");
                 } else {
                     try (
                             PreparedStatement login = conn.prepareStatement(conT);
@@ -179,7 +192,7 @@ public class Contentslmpl implements Contents {
 
                         ResultSet resultSet = login.executeQuery();
                         if (resultSet.next()) {
-                            System.out.println("Login Successful!");
+                            System.out.println("로그인 성공!");
                         }
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
@@ -193,15 +206,17 @@ public class Contentslmpl implements Contents {
 
     @Override
     public void addContents() {
-        String query = "INSERT INTO CONTENTS (ID, CONTENTS) VALUES (?, ?)";
+        String query = "INSERT INTO CONTENTS (ID, CONTENTS, NOWDATE) VALUES (?, ?, ?)";
+        getNowDateTime();
+        String date = getNowDateTime();
 
         if (!status) {
-            System.out.println("Please Login First.");
+            System.out.println("로그인 먼저 해주세요.");
             return;
         }
 
         Scanner sc = new Scanner(System.in);
-        System.out.print("Write : ");
+        System.out.print("글쓰기 : ");
         String content = sc.nextLine();
 
         try (
@@ -210,10 +225,187 @@ public class Contentslmpl implements Contents {
         ) {
             addCon.setString(1, nowID);
             addCon.setString(2, content);
+            addCon.setString(3, date);
 
             int result = addCon.executeUpdate();
             if (result > 0) {
-                System.out.println("Contents Added!");
+                System.out.println("댓글이 추가되었습니다!");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void replaceContents() {
+        String displayCon = "SELECT CONTNO, ID, CONTENTS FROM CONTENTS WHERE ID = ?";
+        String updateCon = "UPDATE CONTENTS SET ID = ?, CONTENTS = ? WHERE CONTNO = ?";
+
+        if (!status) {
+            System.out.println("로그인 먼저 해주세요.");
+            return;
+        }
+
+        try (
+                Connection conn = connection();
+        ) {
+            try (PreparedStatement displaycontents = conn.prepareStatement(displayCon)) {
+                displaycontents.setString(1, nowID);
+
+                ResultSet resultSet = displaycontents.executeQuery();
+                while (resultSet.next()) {
+                    int contno = resultSet.getInt("CONTNO");
+                    String id = resultSet.getString("ID");
+                    String contents = resultSet.getString("CONTENTS");
+
+                    System.out.println("");
+                    System.out.println("[" + contno + "] " + id + " : " + contents);
+
+                }
+
+                Scanner sc = new Scanner(System.in);
+                System.out.println("");
+                System.out.print("수정하고 싶은 댓글의 번호를 입력해주세요 : ");
+                int chooseNum = sc.nextInt();
+                sc.nextLine();
+
+                System.out.print("수정 : ");
+                String newContents = sc.nextLine();
+                try (PreparedStatement updatecontents = conn.prepareStatement(updateCon)) {
+                    updatecontents.setString(1, nowID);
+                    updatecontents.setString(2, newContents);
+                    updatecontents.setInt(3, chooseNum);
+
+                    int result = updatecontents.executeUpdate();
+                    if (result > 0) {
+                        System.out.println("수정이 완료되었습니다!");
+                    }
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void deleteContents() {
+        String displayCon = "SELECT CONTNO, ID, CONTENTS FROM CONTENTS WHERE ID = ?";
+        String deleteCont = "DELETE FROM CONTENTS WHERE CONTNO = ?";
+
+        if (!status) {
+            System.out.println("로그인 먼저 해주세요.");
+            return;
+        }
+
+        try (
+                Connection conn = connection();
+        ) {
+            try (PreparedStatement displaycontents = conn.prepareStatement(displayCon)) {
+                displaycontents.setString(1, nowID);
+
+                ResultSet resultSet = displaycontents.executeQuery();
+                while (resultSet.next()) {
+                    int contno = resultSet.getInt("CONTNO");
+                    String id = resultSet.getString("ID");
+                    String contents = resultSet.getString("CONTENTS");
+
+                    System.out.println("[" + contno + "] " + id + " : " + contents);
+
+                }
+
+                Scanner sc = new Scanner(System.in);
+                System.out.print("삭제하고 싶은 댓글의 번호를 입력해주세요 : ");
+                int chooseNum = sc.nextInt();
+                sc.nextLine();
+
+                try (PreparedStatement deletecontents = conn.prepareStatement(deleteCont)) {
+                    deletecontents.setInt(1, chooseNum);
+
+                    int result = deletecontents.executeUpdate();
+                    if (result > 0) {
+                        System.out.println("삭제 완료!");
+                    }
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void displayContents() {
+        String displayAll = "SELECT ID, CONTENTS, NOWDATE FROM CONTENTS";
+
+        try (
+                Connection displayall = connection();
+                PreparedStatement displayAllCont = displayall.prepareStatement(displayAll);
+        ) {
+            ResultSet resultSet = displayAllCont.executeQuery();
+            while (resultSet.next()) {
+                String id = resultSet.getString("ID");
+                String contents = resultSet.getString("CONTENTS");
+                String date = resultSet.getString("NOWDATE");
+
+                System.out.println("");
+                System.out.println("[ID] " + id + " : " + contents + " ( " + date + " ) ");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void logout() {
+        status = false;
+        nowID = null;
+        System.out.println("로그아웃 성공!");
+    }
+
+    @Override
+    public void quitMembership() {
+
+        if (!status) {
+            System.out.println("로그인 먼저 해주세요.");
+            return;
+        }
+
+        String deleteInfo = "DELETE FROM INFO WHERE ENAME = ? and PW = ?";
+        String deleteCont = "DELETE FROM CONTENTS WHERE ID = ?";
+
+        Scanner sc = new Scanner(System.in);
+        System.out.print("이름 재확인 : ");
+        String name = sc.nextLine();
+        System.out.print("PW 재확인 : ");
+        String pw = sc.nextLine();
+
+        try (
+                Connection conn = connection();
+        ) {
+            try (PreparedStatement deleteinfo = conn.prepareStatement(deleteInfo)){
+                deleteinfo.setString(1, name);
+                deleteinfo.setString(2, pw);
+
+                int result = deleteinfo.executeUpdate();
+                if (result > 0) {
+                    try(PreparedStatement deleteconts = conn.prepareStatement(deleteCont)){
+                        deleteconts.setString(1, nowID);
+                        int result2 = deleteconts.executeUpdate();
+                        if (result2 > 0) {
+                            System.out.println("회원탈퇴 성공! 이용해주셔서 감사합니다");
+
+                            status = false;
+                            nowID = null;
+                        }
+                    }
+                }else{
+                    System.out.println("잘못된 정보입니다.");
+                }
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
