@@ -6,7 +6,7 @@ import java.io.UnsupportedEncodingException;
 public class Contents_Start {
     public static void main(String[] args) throws UnsupportedEncodingException {
         System.setOut(new PrintStream(System.out, true, "UTF-8"));
-        Contents contents = new Contentslmpl();
+        Contents contents = new Contentslmpl_practice();
         while (true) {
             int firstMenu = contents.firstMenu();
             switch (firstMenu) {
