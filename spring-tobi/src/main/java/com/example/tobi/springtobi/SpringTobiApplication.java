@@ -1,9 +1,8 @@
 package com.example.tobi.springtobi;
 
-import com.example.tobi.springtobi.ex_1_5.dao.CountingConnectionMaker;
-import com.example.tobi.springtobi.ex_1_5.dao.CountingDaoFactory;
-import com.example.tobi.springtobi.ex_1_5.dao.UserDao;
-import com.example.tobi.springtobi.ex_1_5.domain.User;
+import com.example.tobi.springtobi.ch01.ex_1_5.dao.CountingDaoFactory;
+import com.example.tobi.springtobi.ch01.ex_1_5.dao.UserDao;
+import com.example.tobi.springtobi.ch01.ex_1_5.domain.User;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
