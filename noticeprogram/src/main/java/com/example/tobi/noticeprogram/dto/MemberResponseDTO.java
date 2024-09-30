@@ -1,4 +1,4 @@
-package com.example.tobi.springbootbasic.dto;
+package com.example.tobi.noticeprogram.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,8 +8,9 @@ import lombok.Getter;
 @Builder
 @AllArgsConstructor
 public class MemberResponseDTO {
-    private Long id;
     private String name;
     private String email;
-    private String userid;
+    private String phone;
+    private String id;
+    private String password;
 }

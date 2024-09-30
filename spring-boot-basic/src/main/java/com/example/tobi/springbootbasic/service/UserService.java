@@ -40,7 +40,11 @@ public class UserService {
         userMapper.insertUser(user);
     }
 
-    public void deleteUser(String userid, String password) {
-        userMapper.deleteUser(userid, password);
+    public void updateUser(User user) {
+        userMapper.updateUser(user);
+    }
+
+    public void deleteUser(User user) {
+        userMapper.deleteUser(user);
     }
 }

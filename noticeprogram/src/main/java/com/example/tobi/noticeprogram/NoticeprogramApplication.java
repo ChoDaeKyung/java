@@ -1,13 +1,13 @@
-package com.example.tobi.springbootbasic;
+package com.example.tobi.noticeprogram;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SpringBootBasicApplication {
+public class NoticeprogramApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(SpringBootBasicApplication.class, args);
+        SpringApplication.run(NoticeprogramApplication.class, args);
     }
 
 }

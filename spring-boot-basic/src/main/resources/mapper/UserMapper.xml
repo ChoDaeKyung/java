@@ -16,8 +16,26 @@
         INSERT INTO user(name, email, userid, password) VALUES ( #{name}, #{email}, #{userid}, #{password} );
     </insert>
 
+    <update id="updateUser" parameterType="com.example.tobi.springbootbasic.model.User">
+        UPDATE
+            user
+        SET
+            name = #{name},
+            email = #{email},
+            userid = #{userid}
+        WHERE
+            id = #{id};
+    </update>
+
     <delete id="deleteUser" parameterType="com.example.tobi.springbootbasic.model.User">
-        DELETE FROM user WHERE userid = #{userid} and password = #{password};
+        DELETE FROM
+                   user
+        WHERE
+            id = #{id}
+        AND
+            userid = #{userid}
+        AND
+            password = #{password};
     </delete>
 
 </mapper>

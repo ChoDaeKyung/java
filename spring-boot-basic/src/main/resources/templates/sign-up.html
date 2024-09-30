@@ -51,18 +51,18 @@
       },
       body: JSON.stringify(formData)
     })
-            .then(response => {
-              if (response.redirected) {
-                window.location.href = response.url;
-              } else {
-                return response.text();
-              }
-            })
-            .catch(error => {
-              console.error('Error:', error);
-              alert('요청 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.');
-              window.location.href = '/users';
-            });
+    .then(response => {
+      if (response.redirected) {
+        window.location.href = response.url;
+      } else {
+        return response.text();
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('요청 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.');
+      window.location.href = '/users';
+    });
   }
 </script>
 

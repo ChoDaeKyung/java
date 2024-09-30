@@ -1,24 +1,27 @@
-package com.example.tobi.springbootbasic.model;
+package com.example.tobi.noticeprogram.model;
 
-import com.example.tobi.springbootbasic.dto.MemberResponseDTO;
-import lombok.*;
+import com.example.tobi.noticeprogram.dto.MemberResponseDTO;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
 @Builder
 public class User {
-    private Long id;
     private String name;
     private String email;
-    private String userid;
+    private String phone;
+    private String id;
     private String password;
 
     public MemberResponseDTO toMemberResponseDTO() {
         return MemberResponseDTO.builder()
-                .id(id)
                 .name(name)
                 .email(email)
-                .userid(userid)
+                .phone(phone)
+                .id(id)
+                .password(password)
                 .build();
     }
 }

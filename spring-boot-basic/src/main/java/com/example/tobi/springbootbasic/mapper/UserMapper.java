@@ -1,6 +1,5 @@
 package com.example.tobi.springbootbasic.mapper;
 
-import com.example.tobi.springbootbasic.dto.MemberResponseDTO;
 import com.example.tobi.springbootbasic.model.User;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -11,5 +10,6 @@ public interface UserMapper {
     List<User> findAll();
     User findById(long id);
     void insertUser(User user);
-    void deleteUser(String userid, String password);
+    void updateUser(User user);
+    void deleteUser(User user);
 }

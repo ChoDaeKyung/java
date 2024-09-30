@@ -1,9 +1,10 @@
 package com.example.tobi.springbootbasic.controller;
 
-import com.example.tobi.springbootbasic.dto.MemberCreateRequestDTO;
-import com.example.tobi.springbootbasic.dto.MemberResponseDTO;
+import com.example.tobi.springbootbasic.dto.*;
 import com.example.tobi.springbootbasic.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -38,6 +39,28 @@ public class UserController {
         return "user-update";
     }
 
+    @GetMapping("/delete")
+    public String deleteUser(
+            @RequestParam("id") Long id,
+            @RequestParam("userid") String userid,
+            Model model
+    ) {
+        model.addAttribute(
+                "user",
+                MemberDeleteUserResponseDTO.builder()
+                    .id(id)
+                    .userid(userid)
+                    .build()
+        );
+        return "user-delete";
+    }
+
+    @DeleteMapping
+    public ResponseEntity<HttpStatus> deleteUser(@RequestBody MemberDeleteRequestDTO request) {
+        userService.deleteUser(request.toUser());
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
+
 //    @GetMapping("/update")
 //    public String updateForm(@RequestParam("id") Long id, Model model) {
 //        System.out.println("id :: " + id);
@@ -50,10 +73,11 @@ public class UserController {
         return "redirect:/users";
     }
 
-    @PostMapping("/delete")
-    public String deleteUser(@RequestBody MemberCreateRequestDTO request) {
-        userService.deleteUser(request.getUserid(), request.getPassword());
-        return "user-delete";
+    @PutMapping
+    public ResponseEntity<String> update(@RequestBody MemberUpdateRequestDTO request) {
+        userService.updateUser( request.toUser() );
+        return ResponseEntity.ok("Updated");
     }
+
 
 }

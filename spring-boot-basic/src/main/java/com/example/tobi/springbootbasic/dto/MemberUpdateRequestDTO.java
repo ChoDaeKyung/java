@@ -1,23 +1,23 @@
 package com.example.tobi.springbootbasic.dto;
 
 import com.example.tobi.springbootbasic.model.User;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
 @Getter
-public class MemberCreateRequestDTO {
+@ToString
+public class MemberUpdateRequestDTO {
+    private Long id;
     private String name;
     private String email;
     private String userid;
-    private String password;
 
     public User toUser() {
         return User.builder()
+                .id(id)
                 .name(name)
                 .email(email)
                 .userid(userid)
-                .password(password)
                 .build();
     }
 }
