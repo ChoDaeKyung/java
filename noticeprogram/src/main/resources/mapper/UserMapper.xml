@@ -5,11 +5,18 @@
 <mapper namespace="com.example.tobi.noticeprogram.mapper.UserMapper">
 
     <insert id="insertUser" parameterType="com.example.tobi.noticeprogram.model.User">
-        INSERT INTO user(name, email, phone) VALUES ( #{name}, #{email}, #{phone});
+        INSERT INTO user(name, email, phone, id, password) VALUES ( #{name}, #{email}, #{phone}, #{id}, #{password});
     </insert>
 
-    <select id="login" parameterType="com.example.tobi.noticeprogram.model.User">
-        SELECT id, password FROM user WHERE id = #{id} and password = #{password};
+    <select id="checkPassword" parameterType="com.example.tobi.noticeprogram.model.User">
+        SELECT password FROM user WHERE id = #{id};
     </select>
 
+    <select id="checkemail" parameterType="com.example.tobi.noticeprogram.model.User">
+        SELECT email FROM user WHERE email = #{email};
+    </select>
+
+    <select id="checkphone" parameterType="com.example.tobi.noticeprogram.model.User">
+        SELECT phone FROM user WHERE phone = #{phone};
+    </select>
 </mapper>

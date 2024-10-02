@@ -15,9 +15,33 @@ public class UserService {
         userMapper.insertUser(user);
     }
 
-    public boolean login(User user) {
-        User result = userMapper.login(user);
-
-        return result != null;
+    public String checkPassword(String id) {
+        return userMapper.checkPassword(id);
     }
+
+    public boolean isPWmatch(String rawPassword, String encodedPassword) {
+        return rawPassword.equals(encodedPassword);
+    }
+
+    public boolean checkemail(String email) {
+        User user = userMapper.checkemail(email);
+
+        if(user.getEmail().equals(email)) {
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public boolean checkphone(String phone) {
+        User user = userMapper.checkphone(phone);
+
+        if(user.getPhone().equals(phone)) {
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+
 }
