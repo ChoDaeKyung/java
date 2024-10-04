@@ -1,0 +1,47 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+}
+.container {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 400px;
+}
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+.list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+.list-item {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+.list-item:last-child {
+    border-bottom: none;
+}
+.button {
+    background-color: #ff69b4; /* 핑크색 */
+    border: none;
+    border-radius: 5px;
+    color: white;
+    padding: 10px 15px;
+    cursor: pointer;
+    display: block;
+    margin: 20px auto 0;
+    text-align: center;
+    font-size: 16px;
+}
+.button:hover {
+    background-color: #ff1493; /* 어두운 핑크색 */
+}

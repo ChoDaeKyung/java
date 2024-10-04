@@ -33,5 +33,4 @@ public class MemberApiController {
                 memberService.signIn(signInRequestDTO.toMember(), session)
         );
     }
-
 }
