@@ -3,12 +3,6 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.tobi.SpringbootBasicBoard.mapper.MemberMapper">
 
-    <resultMap id="memberResultMap" type="com.example.tobi.SpringbootBasicBoard.model.Member">
-        <result property="userId" column="user_id"/>
-        <result property="password" column="password"/>
-        <result property="userName" column="user_name"/>
-    </resultMap>
-
     <insert id="signUp" parameterType="com.example.tobi.SpringbootBasicBoard.model.Member">
         INSERT INTO member (user_id, password, user_name)
         VALUES (#{userId}, #{password}, #{userName});
@@ -16,7 +10,7 @@
 
     <select id="signIn"
             parameterType="String"
-            resultMap="memberResultMap">
+            resultType="com.example.tobi.SpringbootBasicBoard.model.Member">
         SELECT * FROM member WHERE user_id = #{userId};
     </select>
 

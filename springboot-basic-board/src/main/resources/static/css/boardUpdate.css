@@ -9,19 +9,13 @@ body {
     min-height: 100vh;
 }
 
-.write-container {
+.container {
     background-color: #fff;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
     width: 80%;
     max-width: 800px;
-}
-
-h2 {
-    text-align: center;
-    color: #333;
-    margin-bottom: 20px;
 }
 
 .form-group {
@@ -51,8 +45,7 @@ textarea {
     height: 150px; /* 기본 높이 설정 */
 }
 
-input[type="submit"] {
+button {
     background-color: #4CAF50;
     color: white;
-    padding: 10px 15px;
 }

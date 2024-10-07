@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.tobi.SpringbootBasicBoard.mapper.BoardMapper">
+    <select id="selectBoardList" resultType="com.example.tobi.SpringbootBasicBoard.model.Board">
+        SELECT *
+        FROM article
+        order by id desc limit = #{offset}, #{size}
+    </select>
+    <select id="countBoard" resultType="Integer">
+        slect count(*) from acticle;
+    </select>
+<select id = "selectBoardDetail"
+        parameterType="Long"
+        resultType="boardResultMap">
+    SELECT *
+    FROM article
+    where id =
+          #{id};
+
+</select>
+</mapper>

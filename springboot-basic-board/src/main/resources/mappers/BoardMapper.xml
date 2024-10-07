@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.tobi.springbootbasicboard.mapper.BoardMapper">
+<mapper namespace="com.example.tobi.SpringbootBasicBoard.mapper.BoardMapper">
 
-    <resultMap id="boardResultMap" type="com.example.tobi.springbootbasicboard.model.Board">
+    <resultMap id="boardResultMap" type="com.example.tobi.SpringbootBasicBoard.model.Board">
         <result property="id" column="id"/>
         <result property="userId" column="user_id"/>
         <result property="title" column="title"/>
@@ -11,7 +11,7 @@
     </resultMap>
 
     <select id="selectBoardList"
-            parameterType="com.example.tobi.springbootbasicboard.model.Paging"
+            parameterType="com.example.tobi.SpringbootBasicBoard.model.Paging"
             resultMap="boardResultMap">
         SELECT
             *
@@ -30,5 +30,14 @@
             resultMap="boardResultMap">
         SELECT * FROM article WHERE id = #{id};
     </select>
+    <insert id="write" parameterType="com.example.tobi.SpringbootBasicBoard.model.Board">
+        INSERT INTO article (title, content, user_id) VALUES (#{title}, #{content}, #{userId})
+    </insert>
+
+    <delete id="delete" parameterType="Long">
+        DELETE FROM article WHERE id = #{id}
+    </delete>
+
+
 
 </mapper>
