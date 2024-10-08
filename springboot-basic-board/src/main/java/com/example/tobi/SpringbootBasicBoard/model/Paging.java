@@ -1,4 +1,4 @@
-package com.example.tobi.SpringbootBasicBoard.model;
+package com.example.tobi.springbootbasicboard.model;
 
 import lombok.Builder;
 import lombok.Getter;

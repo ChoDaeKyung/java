@@ -1,7 +1,8 @@
-package com.example.tobi.SpringbootBasicBoard.dto;
+package com.example.tobi.springbootbasicboard.dto;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
 @Builder

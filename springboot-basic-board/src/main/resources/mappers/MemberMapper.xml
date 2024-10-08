@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.tobi.SpringbootBasicBoard.mapper.MemberMapper">
+<mapper namespace="com.example.tobi.springbootbasicboard.mapper.MemberMapper">
 
-    <resultMap id="memberResultMap" type="com.example.tobi.SpringbootBasicBoard.model.Member">
+    <resultMap id="memberResultMap" type="com.example.tobi.springbootbasicboard.model.Member">
         <result property="userId" column="user_id"/>
         <result property="password" column="password"/>
         <result property="userName" column="user_name"/>
     </resultMap>
 
-    <insert id="signUp" parameterType="com.example.tobi.SpringbootBasicBoard.model.Member">
+    <insert id="signUp" parameterType="com.example.tobi.springbootbasicboard.model.Member">
         INSERT INTO member (user_id, password, user_name)
         VALUES (#{userId}, #{password}, #{userName});
     </insert>

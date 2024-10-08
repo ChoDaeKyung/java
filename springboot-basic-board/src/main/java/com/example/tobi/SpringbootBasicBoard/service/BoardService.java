@@ -1,14 +1,13 @@
-package com.example.tobi.SpringbootBasicBoard.service;
+package com.example.tobi.springbootbasicboard.service;
 
-import com.example.tobi.SpringbootBasicBoard.dto.BoardUpdateRequestDTO;
-import com.example.tobi.SpringbootBasicBoard.dto.BoardWriteRequestDTO;
-import com.example.tobi.SpringbootBasicBoard.mapper.BoardMapper;
-import com.example.tobi.SpringbootBasicBoard.model.Board;
-import com.example.tobi.SpringbootBasicBoard.model.Paging;
+import com.example.tobi.springbootbasicboard.dto.BoardDeleteRequestDTO;
+import com.example.tobi.springbootbasicboard.mapper.BoardMapper;
+import com.example.tobi.springbootbasicboard.model.Board;
+import com.example.tobi.springbootbasicboard.model.Paging;
 import lombok.RequiredArgsConstructor;
-import org.apache.ibatis.javassist.NotFoundException;
-import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -17,6 +16,7 @@ import java.util.List;
 public class BoardService {
 
     private final BoardMapper boardMapper;
+    private final FileService fileService;
 
     public List<Board> getBoardList(int page, int size) {
         int offset = (page - 1) * size; // 페이지는 1부터 시작, offset 계산
@@ -35,32 +35,54 @@ public class BoardService {
     public Board getBoardDetail(long id) {
         return boardMapper.selectBoardDetail(id);
     }
-    // 게시글 저장 메소드 추가
-    public void write(BoardWriteRequestDTO boardWriteRequestDTO) {
-        Board board = boardWriteRequestDTO.toBoard(); // DTO를 Board 객체로 변환
-        boardMapper.write(board); // Mapper를 통해 데이터베이스에 저장
-    }
 
-    public void deleteBoard(Long id) {
-        try {
-            boardMapper.delete(id);
-        } catch (EmptyResultDataAccessException e) {
-            throw new IllegalArgumentException("Board with ID " + id + " does not exist.");
+    public void saveArticle(String userId, String title, String content, MultipartFile file) {
+        String path = null;
+
+        if (!file.isEmpty()) {
+            path = fileService.fileUpload(file);
         }
+
+        boardMapper.saveArticle(
+                Board.builder()
+                        .title(title)
+                        .content(content)
+                        .userId(userId)
+                        .filePath(path)
+                        .build()
+        );
+
     }
 
-    public void updateBoard(Long id, BoardUpdateRequestDTO boardUpdateRequestDTO) throws NotFoundException {
-//        Board existingBoard = boardMapper.selectBoardDetail(id);
-//        if (existingBoard == null) {
-//            throw new NotFoundException("게시글을 찾을 수 없습니다.");
-//        }
-//
-//        // 수정할 필드만 업데이트
-//        existingBoard.setTitle(boardUpdateRequestDTO.getTitle());
-//        existingBoard.setContent(boardUpdateRequestDTO.getContent());
-//
-//        boardMapper.update(existingBoard); // 수정된 게시글을 DB에 업데이트
+    public Resource downloadFile(String fileName) {
+        return fileService.downloadFile(fileName);
     }
 
+    public void deleteArticle(long id, BoardDeleteRequestDTO request) {
+        boardMapper.deleteBoardById(id);
+        fileService.deleteFile(request.getFilePath());
+    }
 
+    public void updateArticle(Long id, String title, String content, Boolean fileFlag, String filePath, MultipartFile file) {
+        // fileFlag == false or true
+        System.out.println("flag :: " + fileFlag);
+        String path = null;
+        if (fileFlag) {
+            fileService.deleteFile(filePath);
+            if (!file.isEmpty()) {
+                path = fileService.fileUpload(file);
+            }
+        } else {
+            path = filePath;
+        }
+
+        boardMapper.updateArticle(
+                Board.builder()
+                        .id(id)
+                        .title(title)
+                        .content(content)
+                        .filePath(path)
+                        .build()
+        );
+    }
 }

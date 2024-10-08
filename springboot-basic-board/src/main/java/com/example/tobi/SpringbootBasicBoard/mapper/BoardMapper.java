@@ -1,7 +1,7 @@
-package com.example.tobi.SpringbootBasicBoard.mapper;
+package com.example.tobi.springbootbasicboard.mapper;
 
-import com.example.tobi.SpringbootBasicBoard.model.Board;
-import com.example.tobi.SpringbootBasicBoard.model.Paging;
+import com.example.tobi.springbootbasicboard.model.Board;
+import com.example.tobi.springbootbasicboard.model.Paging;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -11,7 +11,7 @@ public interface BoardMapper {
     List<Board> selectBoardList(Paging page);
     int countBoards();
     Board selectBoardDetail(long id);
-    void write(Board board); // 성공 시 1, 실패 시 0을 반환
-    void delete(Long id);
-    void update(Board board);
+    void saveArticle(Board board);
+    void deleteBoardById(long id);
+    void updateArticle(Board board);
 }

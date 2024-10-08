@@ -1,4 +1,4 @@
-package com.example.tobi.SpringbootBasicBoard.service;
+package com.example.tobi.springbootbasicboard.service;
 
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -49,8 +49,10 @@ public class FileService {
 
     public void deleteFile(String filePath) {
         try {
-            Path path = Paths.get(filePath);
-            Files.deleteIfExists(path);
+            if(!filePath.trim().isEmpty()) {
+                Path path = Paths.get(filePath);
+                Files.deleteIfExists(path);
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

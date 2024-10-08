@@ -1,15 +1,21 @@
-package com.example.tobi.SpringbootBasicBoard.controller;
+package com.example.tobi.springbootbasicboard.controller;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.ui.Model;
-import com.example.tobi.SpringbootBasicBoard.dto.*;
-import com.example.tobi.SpringbootBasicBoard.model.Board;
-import com.example.tobi.SpringbootBasicBoard.service.BoardService;
+import com.example.tobi.springbootbasicboard.dto.BoardDeleteRequestDTO;
+import com.example.tobi.springbootbasicboard.dto.BoardDetailResponseDTO;
+import com.example.tobi.springbootbasicboard.dto.BoardListResponseDTO;
+import com.example.tobi.springbootbasicboard.model.Board;
+import com.example.tobi.springbootbasicboard.service.BoardService;
 import lombok.RequiredArgsConstructor;
-import org.apache.ibatis.javassist.NotFoundException;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @RestController
@@ -48,45 +54,54 @@ public class BoardApiController {
                 .content(boardDetail.getContent())
                 .created(boardDetail.getCreated())
                 .userId(boardDetail.getUserId())
+                .filePath(boardDetail.getFilePath())
                 .build();
     }
 
-    // 게시글 수정 요청 처리
-    @PutMapping("/{id}")
-    public ResponseEntity<BoardUpdateResponseDTO> updateBoard(@PathVariable long id, @RequestBody BoardUpdateRequestDTO boardUpdateRequestDTO) {
-        try {
-            boardService.updateBoard(id, boardUpdateRequestDTO);
-            return ResponseEntity.ok(BoardUpdateResponseDTO.builder()
-                    .message("게시글 수정 성공")
-                    .build());
-        } catch (NotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(BoardUpdateResponseDTO.builder()
-                    .message("게시글을 찾을 수 없습니다.")
-                    .build());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(BoardUpdateResponseDTO.builder()
-                    .message("게시글 수정에 실패했습니다.")
-                    .build());
-        }
+    @PostMapping
+    public ResponseEntity<Void> saveArticle(
+            @RequestParam("title") String title,
+            @RequestParam("hiddenUserId") String userId,
+            @RequestParam("content") String content,
+            @RequestPart("file") MultipartFile file
+    ) {
+        boardService.saveArticle(userId, title, content, file);
+        return ResponseEntity.ok().build();
     }
 
-    // 게시글 작성 요청 처리
-    @PostMapping("/write")
-    public ResponseEntity<BoardWriteResponseDTO> write(@RequestBody BoardWriteRequestDTO boardWriteRequestDTO) {
-        boardService.write(boardWriteRequestDTO);
-        return ResponseEntity.ok(
-                BoardWriteResponseDTO.builder()
-                        .url("/") // Redirect URL after successful write
-                        .build()
-        );
+    @PutMapping
+    public ResponseEntity<Void> updateArticle(
+            @RequestParam("title") String title,
+            @RequestParam("hiddenId") Long id,
+            @RequestParam("content") String content,
+            @RequestParam("hiddenFileFlag") Boolean fileFlag,
+            @RequestParam("hiddenFilePath") String filePath,
+            @RequestPart("file") MultipartFile file
+    ) {
+        boardService.updateArticle(id, title, content, fileFlag, filePath, file);
+        return ResponseEntity.ok().build();
     }
 
-    // 게시글 삭제 요청 처리
+    @GetMapping("/file/download/{fileName}")
+    public ResponseEntity<Resource> downloadFile(@PathVariable String fileName) throws UnsupportedEncodingException {
+        Resource resource = boardService.downloadFile(fileName);
+
+        // 한글 파일명을 URL 인코딩
+        String encodedFileName = URLEncoder.encode(resource.getFilename(), StandardCharsets.UTF_8.toString());
+
+        // 파일 다운로드 처리
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename*=UTF-8''" + encodedFileName)
+                .body(resource);
+    }
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<BoardDeleteResponseDTO> deleteBoard(@PathVariable long id) {
-        boardService.deleteBoard(id);
-        return ResponseEntity.ok(BoardDeleteResponseDTO.builder()
-                .message("Board deleted successfully.")
-                .build());
+    public ResponseEntity<String> deleteArticle(
+            @PathVariable long id,
+            @RequestBody BoardDeleteRequestDTO request
+    ) {
+        boardService.deleteArticle(id, request);
+        return ResponseEntity.ok("게시글이 성공적으로 삭제되었습니다.");
     }
 }

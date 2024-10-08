@@ -1,4 +1,4 @@
-package com.example.tobi.SpringbootBasicBoard.controller;
+package com.example.tobi.springbootbasicboard.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

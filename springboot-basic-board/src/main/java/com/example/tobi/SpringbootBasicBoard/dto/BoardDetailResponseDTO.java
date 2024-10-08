@@ -1,4 +1,4 @@
-package com.example.tobi.SpringbootBasicBoard.dto;
+package com.example.tobi.springbootbasicboard.dto;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -11,5 +11,6 @@ public class BoardDetailResponseDTO {
     private String title;
     private String content;
     private String userId;
+    private String filePath;
     private LocalDateTime created;
 }

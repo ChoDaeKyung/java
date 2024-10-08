@@ -1,13 +1,14 @@
-package com.example.tobi.SpringbootBasicBoard.controller;
+package com.example.tobi.springbootbasicboard.controller;
 
-import com.example.tobi.SpringbootBasicBoard.dto.SignInRequestDTO;
-import com.example.tobi.SpringbootBasicBoard.dto.SignInResponseDTO;
-import com.example.tobi.SpringbootBasicBoard.dto.SignUpRequestDTO;
-import com.example.tobi.SpringbootBasicBoard.dto.SignUpResponseDTO;
-import com.example.tobi.SpringbootBasicBoard.service.MemberService;
+import com.example.tobi.springbootbasicboard.dto.SignInRequestDTO;
+import com.example.tobi.springbootbasicboard.dto.SignInResponseDTO;
+import com.example.tobi.springbootbasicboard.dto.SignUpRequestDTO;
+import com.example.tobi.springbootbasicboard.dto.SignUpResponseDTO;
+import com.example.tobi.springbootbasicboard.service.MemberService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -27,8 +28,7 @@ public class MemberApiController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<SignInResponseDTO>
-    signIn(@RequestBody SignInRequestDTO signInRequestDTO, HttpSession session) {
+    public ResponseEntity<SignInResponseDTO> signIn(@RequestBody SignInRequestDTO signInRequestDTO, HttpSession session) {
         return ResponseEntity.ok(
                 memberService.signIn(signInRequestDTO.toMember(), session)
         );

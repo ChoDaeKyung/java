@@ -1,17 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.tobi.SpringbootBasicBoard.mapper.BoardMapper">
+<mapper namespace="com.example.tobi.springbootbasicboard.mapper.BoardMapper">
 
-    <resultMap id="boardResultMap" type="com.example.tobi.SpringbootBasicBoard.model.Board">
+    <resultMap id="boardResultMap" type="com.example.tobi.springbootbasicboard.model.Board">
         <result property="id" column="id"/>
         <result property="userId" column="user_id"/>
         <result property="title" column="title"/>
         <result property="created" column="created"/>
+        <result property="filePath" column="file_path"/>
     </resultMap>
 
+    <insert id="saveArticle" parameterType="com.example.tobi.springbootbasicboard.model.Board">
+        INSERT INTO
+            article(user_id, title, content, file_path)
+        VALUES
+            (#{userId}, #{title}, #{content}, #{filePath});
+    </insert>
+
     <select id="selectBoardList"
-            parameterType="com.example.tobi.SpringbootBasicBoard.model.Paging"
+            parameterType="com.example.tobi.springbootbasicboard.model.Paging"
             resultMap="boardResultMap">
         SELECT
             *
@@ -28,16 +36,22 @@
     <select id="selectBoardDetail"
             parameterType="Long"
             resultMap="boardResultMap">
-        SELECT * FROM article WHERE id = #{id};
+        SELECT
+            id, title, content, user_id, file_path, created
+        FROM article WHERE id = #{id};
     </select>
-    <insert id="write" parameterType="com.example.tobi.SpringbootBasicBoard.model.Board">
-        INSERT INTO article (title, content, user_id) VALUES (#{title}, #{content}, #{userId})
-    </insert>
 
-    <delete id="delete" parameterType="Long">
-        DELETE FROM article WHERE id = #{id}
+    <delete id="deleteBoardById" parameterType="Long">
+        DELETE FROM article
+        WHERE id = #{id};
     </delete>
 
-
+    <update id="updateArticle" parameterType="com.example.tobi.springbootbasicboard.model.Board">
+        UPDATE article
+        SET
+            title = #{title}, content = #{content}, file_path = #{filePath}
+        WHERE
+            id = #{id};
+    </update>
 
 </mapper>

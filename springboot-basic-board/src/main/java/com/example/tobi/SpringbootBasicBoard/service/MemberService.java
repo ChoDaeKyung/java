@@ -1,8 +1,8 @@
-package com.example.tobi.SpringbootBasicBoard.service;
+package com.example.tobi.springbootbasicboard.service;
 
-import com.example.tobi.SpringbootBasicBoard.dto.SignInResponseDTO;
-import com.example.tobi.SpringbootBasicBoard.mapper.MemberMapper;
-import com.example.tobi.SpringbootBasicBoard.model.Member;
+import com.example.tobi.springbootbasicboard.dto.SignInResponseDTO;
+import com.example.tobi.springbootbasicboard.mapper.MemberMapper;
+import com.example.tobi.springbootbasicboard.model.Member;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

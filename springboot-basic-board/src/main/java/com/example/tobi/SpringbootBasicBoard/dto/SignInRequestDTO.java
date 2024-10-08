@@ -1,6 +1,6 @@
-package com.example.tobi.SpringbootBasicBoard.dto;
+package com.example.tobi.springbootbasicboard.dto;
 
-import com.example.tobi.SpringbootBasicBoard.model.Member;
+import com.example.tobi.springbootbasicboard.model.Member;
 import lombok.Getter;
 import lombok.ToString;
 
