@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://code.jquery.com/jquery-3.7.1.js" crossorigin="anonymous"></script>
+  <script th:src="@{/js/login.js}"></script>
+  <title>Login Form</title>
+  <!-- CSS 파일 연결 -->
+  <link th:href="@{/css/login.css}" rel="stylesheet">
+</head>
+<body>
+<div class="center-container">
+  <div class="login-box">
+    <h2>날씨를 알려 DREAM</h2>
+    <form>
+      <div class="input-group">
+        <input type="text" id="email" placeholder="ID" required>
+      </div>
+      <div class="input-group">
+        <input type="password" id="password" placeholder="Password" required>
+      </div>
+      <button type="submit" id="login" class="login-btn">로그인</button>
+
+      <p class="signup-text">회원이 아니신가요? <a th:href="@{/weather/join}" class="signup-link">회원가입</a></p>
+    </form>
+  </div>
+</div>
+</body>
+</html>

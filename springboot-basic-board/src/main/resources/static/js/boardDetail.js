@@ -2,6 +2,7 @@
 $(document).ready(() => {
     checkSession();
     loadBoardDetail();
+
 });
 
 let editArticle = () => {

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.tobi.getweather.mapper.UserMapper">
+
+<insert id="signUp" parameterType="com.example.tobi.getweather.model.User">
+    INSERT INTO user(userid, password, username, email, phone) VALUES (#{userid}, #{password}, #{username}, #{email}, #{phone});
+</insert>
+
+    <select id="signIn" parameterType="com.example.tobi.getweather.model.User">
+        SELECT * FROM user WHERE userid = #{userid};
+    </select>
+
+</mapper>
