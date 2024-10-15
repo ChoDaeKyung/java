@@ -11,7 +11,7 @@
 <body>
 <div class="container">
     <div class="header">
-        <div class="logo">Team3</div>
+        <a href="/main" class="logo">Team3</a>
         <div class="search-bar">
             <div class="search-container">
                 <input type="text" placeholder="찾고 싶은 상품을 검색해보세요!">
@@ -26,7 +26,7 @@
             <div th:if="${session.userId != null}">
                 <a th:href="@{/main/mypage}">마이페이지</a>
                 <form th:action="@{/logout}" method="post" style="display: inline;">
-                    <a href="#" onclick="this.closest('form').submit()" style="text-decoration: none; color: black;">로그아웃</a>
+                    <a href="#" onclick="this.closest('form').submit()" style="text-decoration: none; color: black;" id="logout">로그아웃</a>
                 </form>
             </div>
         </div>

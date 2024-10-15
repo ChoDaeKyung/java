@@ -15,4 +15,7 @@ public class UserService {
         userMapper.signUp(user);
     }
 
+    public void changePw(User user) {
+        userMapper.changePw(user);
+    }
 }

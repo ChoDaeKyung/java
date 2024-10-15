@@ -13,6 +13,9 @@
     SELECT userId, password, userName, email, phone, address FROM user WHERE userId = #{userId};
 </select>
 
+    <update id="changePw" parameterType="com.example.tobi.team3.model.User">
+UPDATE user SET password = #{password} WHERE userId = #{userId} and userName = #{userName} and phone = #{phone};
+    </update>
 
 
 </mapper>

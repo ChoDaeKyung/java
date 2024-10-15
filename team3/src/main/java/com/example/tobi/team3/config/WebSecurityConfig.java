@@ -35,7 +35,12 @@ public class WebSecurityConfig {
                                         new AntPathRequestMatcher("/main/login"),
                                         new AntPathRequestMatcher("/main/join"),
                                         new AntPathRequestMatcher("/join"),
-                                        new AntPathRequestMatcher("/main")
+                                        new AntPathRequestMatcher("/main"),
+                                        new AntPathRequestMatcher("/main/find"),
+                                        new AntPathRequestMatcher("/main/find/findId"),
+                                        new AntPathRequestMatcher("/main/find/changePw"),
+                                        new AntPathRequestMatcher("/changePw"),
+                                        new AntPathRequestMatcher("/findId")
                                 ).permitAll()
                                 .anyRequest().authenticated()
                 )

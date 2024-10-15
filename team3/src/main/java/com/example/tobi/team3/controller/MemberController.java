@@ -22,4 +22,14 @@ public class MemberController {
     public String signUp() {
         return "signUp";
     }
+
+    @GetMapping("/find")
+    public String Find() {
+        return "find";
+    }
+
+    @GetMapping("/find/changePw")
+    public String changePw() {
+        return "changePw";
+    }
 }

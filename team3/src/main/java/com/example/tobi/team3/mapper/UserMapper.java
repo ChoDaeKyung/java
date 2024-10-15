@@ -8,4 +8,5 @@ import org.apache.ibatis.annotations.Mapper;
 public interface UserMapper {
     User signIn(String userId);
     void signUp(User user);
+    void changePw(User user);
 }
