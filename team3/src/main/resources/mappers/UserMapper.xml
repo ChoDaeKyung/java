@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.tobi.team3.mapper.UserMapper">
+
+    <insert id="signUp" parameterType="com.example.tobi.team3.model.User">
+        INSERT INTO user (userId, password, userName, email, phone, address)
+        VALUES (#{userId}, #{password}, #{userName}, #{email}, #{phone}, #{address});
+    </insert>
+
+
+<select id="signIn" parameterType="String">
+    SELECT userId, password, userName, email, phone, address FROM user WHERE userId = #{userId};
+</select>
+
+
+
+</mapper>
